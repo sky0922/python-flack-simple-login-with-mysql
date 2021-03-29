@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"></meta>
+    <title>flask</title>
+    <link rel=stylesheet type="text/css" href= "{{ url_for('static', filename = 'flack_css.css') }}">
+
+
+</head>
+<div class="head"> {{ pageTitle }}</div>
+
+<div class="login-info">註冊帳號</div>
+<div class="form">
+    <form action="/singup" method="POST">
+        <div class="field"><span class="form-text">姓名</span><input type="text" name="name" required /></div>
+        <div class="field"><span class="form-text">帳號</span><input type="text" name="username" required /></div>
+        <div class="field"><span class="form-text">密碼</span><input type="password" name="password" required /></div>
+        <div class="field"><input type="submit" value="註冊" /></div>
+    </form>
+    </div>
+<hr>
+
+<div class="login-info">登入系統</div>
+<div class="form">
+<form action="/signin" method="POST">
+    <div class="field"><span class="form-text">帳號</span><input type="text" name="username" required /></div>
+    <div class="field"><span class="form-text">密碼</span><input type="password" name="password" required /></div>
+    <div class="field"><input type="submit" value="登入" /></div>
+</form>
+</div>
+</html>
