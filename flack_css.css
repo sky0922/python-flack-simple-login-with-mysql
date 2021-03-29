@@ -1,0 +1,40 @@
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+.head{
+    padding: 10px;
+    background-color: #223344;
+    font-weight: bold;
+    color: #FFF;
+    text-align: center;
+    font-size: large;
+}
+
+.login-info{
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+}
+
+.field{
+    padding: 5px;
+}
+
+span.form-text{
+    font-size: 20px;
+    padding: 5px;
+}
+
+.form{
+    text-align:center;
+    width: 100%;
+    margin:auto;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
