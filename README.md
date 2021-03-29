@@ -1,5 +1,5 @@
 # python-flack-simple-login-with-mysql
-非常非常簡單結合 mysql 資料庫應用的會員系統
+簡單結合 mysql 資料庫應用的精簡版會員系統
 
 學習目的：
 1. 本次學習目的為 python 與 mysql 的結合，主要範圍是資料庫的應用
