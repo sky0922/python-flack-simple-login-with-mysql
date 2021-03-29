@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"></meta>
+    <title>flask</title>
+    <link rel=stylesheet type="text/css" href= "{{ url_for('static', filename = 'flack_css.css') }}">
+
+
+
+</head>
+
+<div class="head"> {{ pageTitle }}</div>
+<center>
+    <P>{{ name }}，歡迎登入系統</P>
+    <P><a href="/signout">登出系統</a></P>
+</center>
+</html>
