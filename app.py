@@ -4,8 +4,8 @@ import pymysql
 
 MYSQL_HOST = 'localhost'
 MYSQL_DB = 'website'
-MYSQL_USER = '資料庫的使用者名稱'
-MYSQL_PASS = '資料庫的密碼'
+MYSQL_USER = 'root'
+MYSQL_PASS = 'root'
 
 app = Flask(
     __name__,
@@ -28,8 +28,10 @@ message = None
 #連線資料庫函式
 def connect_mysql():  
     global connect, cursor #把資料庫抓到的東西設定全域變數，大家才能用
+
+    #cursorclass = pymysql.cursors.DictCursor 代表抓出來 DB 資料是用字典方式提供，沒設定時為預設 tuple 方式
     connect = pymysql.connect(host = MYSQL_HOST, db = MYSQL_DB, user = MYSQL_USER, password = MYSQL_PASS,
-            charset = 'utf8', use_unicode = True)
+            charset = 'utf8', use_unicode = True, cursorclass = pymysql.cursors.DictCursor)
     cursor = connect.cursor()
 
 
@@ -89,15 +91,22 @@ def singin():
     cursor.execute(selectsql)  
 
     selectDBusername = cursor.fetchone()
-
+    #print (selectDBusername, type(selectDBusername), type(selectDBusername['username']))
     if selectDBusername != None:
         #print(selectDBusername[0], selectDBusername[1], selectDBusername[2], selectDBusername[3])
         #資料庫欄位 0 -> uid, 1 -> 姓名, 2 -> 註冊帳號, 3 -> 密碼, 4 -> 註冊時間
-        if (selectDBusername[2] == username) and selectDBusername[3] == pwd:
-            session["loginUsername"] = str(selectDBusername[2])
-            session["loginname"] = str(selectDBusername[1]) 
+        #以下註解寫法是一開始 tuple 為回傳方式時使用的，之後改以字典方式取的資料目的是，避免資料表未來有異動，還會忘記程式哪有關聯到
+        # if (selectDBusername[2] == username) and selectDBusername[3] == pwd:
+        #     session["loginUsername"] = str(selectDBusername[2])
+        #     session["loginname"] = str(selectDBusername[1]) 
+        #     session["loginState"] = True 
+        #     return redirect(url_for('member'))
+        if (selectDBusername['username'] == username) and selectDBusername['password'] == pwd:
+            session["loginUsername"] = selectDBusername['username']
+            session["loginname"] = selectDBusername['name'] 
             session["loginState"] = True 
             return redirect(url_for('member'))
+
         else:
             #print(session)
             return redirect(url_for('error', message = "帳號或密碼輸入錯誤"))
