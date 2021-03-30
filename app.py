@@ -4,8 +4,8 @@ import pymysql
 
 MYSQL_HOST = 'localhost'
 MYSQL_DB = 'website'
-MYSQL_USER = 'root'
-MYSQL_PASS = 'root'
+MYSQL_USER = '資料庫帳號'
+MYSQL_PASS = '資料庫密碼'
 
 app = Flask(
     __name__,
