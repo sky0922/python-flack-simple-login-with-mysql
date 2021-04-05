@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
-from flask import session
+from flask import session, json, jsonify
 import pymysql
 
 MYSQL_HOST = 'localhost'
 MYSQL_DB = 'website'
-MYSQL_USER = '資料庫帳號'
-MYSQL_PASS = '資料庫密碼'
+MYSQL_USER = 'root'
+MYSQL_PASS = 'root'
 
 app = Flask(
     __name__,
@@ -91,16 +91,7 @@ def singin():
     cursor.execute(selectsql)  
 
     selectDBusername = cursor.fetchone()
-    #print (selectDBusername, type(selectDBusername), type(selectDBusername['username']))
     if selectDBusername != None:
-        #print(selectDBusername[0], selectDBusername[1], selectDBusername[2], selectDBusername[3])
-        #資料庫欄位 0 -> uid, 1 -> 姓名, 2 -> 註冊帳號, 3 -> 密碼, 4 -> 註冊時間
-        #以下註解寫法是一開始 tuple 為回傳方式時使用的，之後改以字典方式取的資料目的是，避免資料表未來有異動，還會忘記程式哪有關聯到
-        # if (selectDBusername[2] == username) and selectDBusername[3] == pwd:
-        #     session["loginUsername"] = str(selectDBusername[2])
-        #     session["loginname"] = str(selectDBusername[1]) 
-        #     session["loginState"] = True 
-        #     return redirect(url_for('member'))
         if (selectDBusername['username'] == username) and selectDBusername['password'] == pwd:
             session["loginUsername"] = selectDBusername['username']
             session["loginname"] = selectDBusername['name'] 
@@ -120,7 +111,6 @@ def singin():
 @app.route("/error")
 def error():
     message = request.args.get('message')
-    #print(message)
     return render_template("error.html", pageTitle = pageTitle3, message = message)
 
 
@@ -141,6 +131,70 @@ def signout():
     session.pop("loginname", None)
     session["loginState"] = False
     return redirect(url_for('index'))
+
+
+# API users 查詢會員姓名
+@app.route("/api/users", methods=["GET"])
+def apiusers():
+
+    #如果未登入，導回首頁
+    if session["loginState"] != True:
+        return redirect(url_for('index'))
+    
+    if request.method == "GET":
+        username = request.args.get('username')
+
+        connect_mysql()
+        selectsql = "select * from user WHERE username = '%s'" %(username)
+        cursor.execute(selectsql)  
+
+        selectDBusername = cursor.fetchone()
+
+        #如果資料庫有撈到資料
+        if selectDBusername != None:
+            #把不要的資料剃除
+            selectDBusername.pop('password')
+            selectDBusername.pop('time')
+
+            #手動將輸出字串調整為 json 格式
+            data = str(selectDBusername)
+            userdata = data.replace("'", '"')
+            userdata = "{ \"data\":"+userdata+"}"
+            #print(userdata)
+            return userdata
+        else:
+            userdata = "{ \"data\" : null }"
+            return userdata
+
+
+# API user 修改會員姓名
+@app.route("/api/user", methods=["POST"])
+def apiuser():
+
+    if request.method == "POST":
+        #擷取前端發來的 json 資料
+        data = request.json
+        #print(data, data["name"])
+
+        name = data["name"]
+        username = session["loginUsername"]
+        #print (name, username)
+
+        connect_mysql()
+        updatasql = "UPDATE user SET name ='%s' WHERE username = '%s'" %(name, username)
+        cursor.execute(updatasql)
+        connect.commit() 
+
+        selectsql = "select * from user WHERE username = '%s'" %(username)
+        cursor.execute(selectsql)
+        selectDBusername = cursor.fetchone()
+
+        #確認資料庫內姓名是否修改成功
+        if selectDBusername['name'] == name:
+            return jsonify({"ok" : "true",})
+        else:
+            return jsonify({"error" : "true",})
+
 
 
 #設定 host & port
