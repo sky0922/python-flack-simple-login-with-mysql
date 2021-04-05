@@ -4,14 +4,95 @@
     <meta charset="utf-8"></meta>
     <title>flask</title>
     <link rel=stylesheet type="text/css" href= "{{ url_for('static', filename = 'flack_css.css') }}">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script>
+
+    function findName(){
+        let username = document.getElementById("username").value;
+        // console.log(username);
+        let src = "http://127.0.0.1:3000/api/users?username="+username;
+
+        fetch (src).then(function(resp){
+            return resp.json();
+        }).then(function(result){
+            // console.log(JSON.stringify(result));
+            let data = result.data;
+            // console.log(data, data.name, data.username);
+            
+            if (JSON.stringify(result) != "{\"data\":null}"){
+                let insertdata = document.querySelector("#result"); 
+                let text = document.createTextNode(data.name+"（"+data.username+"）"); 
+                insertdata.innerHTML = ""; 
+                insertdata.appendChild(text); 
+            }
+            else {
+                let insertdata = document.querySelector("#result");
+                let text = document.createTextNode("查無資料，原因：此帳號未註冊");
+                insertdata.innerHTML = "";
+                insertdata.appendChild(text);
+            }
+
+        });
+
+    }
+
+    function changeName(){
+        let name = document.getElementById("name").value;
+        let src = "http://127.0.0.1:3000/api/user"
+        let dataJSON = {};
+        dataJSON["name"] = name;
+        //console.log(dataJSON);
+
+        $.ajax({
+            url: src,
+            data: JSON.stringify(dataJSON),
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json;charset=utf-8",
+
+            success: function(returnData){
+                //console.log(returnData);
+
+                let insertdata = document.querySelector("#result2");
+                let text = document.createTextNode("更新成功");
+                insertdata.innerHTML = "";
+                insertdata.appendChild(text);
+
+                let insertdata2 = document.querySelector("#welcome");
+                let text2 = document.createTextNode(name+"，歡迎登入系統");
+                insertdata2.innerHTML = "";
+                insertdata2.appendChild(text2);
+
+            },
+            error: function(xhr, ajaxOptions, thrownError){
+                console.log(xhr.status);
+            }
+        });
+
+    }
 
 
+    </Script>
 
 </head>
 
 <div class="head"> {{ pageTitle }}</div>
 <center>
-    <P>{{ name }}，歡迎登入系統</P>
+    <P id = "welcome">{{ name }}，歡迎登入系統</P>
     <P><a href="/signout">登出系統</a></P>
+
+    <b>查詢會員姓名</b><br />
+    <form action="/api/users" method="GET">
+    <input type="text" name="username" id="username" placeholder="請輸入會員帳號" />
+    <input type="button" value="查詢" onclick="findName()" />
+    </form>
+    <div id = "result"></div>
+    <br /><br />
+    <b>更新我的姓名</b><br />
+    <form action="/api/user" method="POST">
+    <input type="text" name="name" id="name" placeholder="請輸入新的姓名" />
+    <input type="button" value="更新" onclick="changeName()"/>
+    </form>
+    <div id = "result2"></div>
 </center>
 </html>
