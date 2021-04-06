@@ -23,7 +23,7 @@
                 if (!result.data) {
                     throw Error("查無資料，原因：此帳號未註冊");
                 }
-                console.log(result.data.name + " (" + result.data.username + ")");
+                // console.log(result.data.name + " (" + result.data.username + ")");
                 let insertdata = document.querySelector("#result"); 
                 let text = document.createTextNode(result.data.name + " (" + result.data.username + ")"); 
                 insertdata.innerHTML = ""; 
