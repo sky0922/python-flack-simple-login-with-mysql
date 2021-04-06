@@ -182,19 +182,14 @@ def apiuser():
 
         connect_mysql()
         updatasql = "UPDATE user SET name ='%s' WHERE username = '%s'" %(name, username)
-        cursor.execute(updatasql)
-        connect.commit() 
-
-        selectsql = "select * from user WHERE username = '%s'" %(username)
-        cursor.execute(selectsql)
-        selectDBusername = cursor.fetchone()
-
-        #確認資料庫內姓名是否修改成功
-        if selectDBusername['name'] == name:
-            return jsonify({"ok" : "true",})
-        else:
+        
+        try:
+            cursor.execute(updatasql)
+            connect.commit() 
+        except:
             return jsonify({"error" : "true",})
-
+        else:
+            return jsonify({"ok" : "true",})
 
 
 #設定 host & port
