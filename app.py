@@ -183,6 +183,7 @@ def apiuser():
         connect_mysql()
         updatasql = "UPDATE user SET name ='%s' WHERE username = '%s'" %(name, username)
         
+        #進行更新動作，如果異常返回 error，執行正常返回 ok
         try:
             cursor.execute(updatasql)
             connect.commit() 
