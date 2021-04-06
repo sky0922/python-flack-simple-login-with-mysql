@@ -16,10 +16,7 @@
         fetch (src).then(function(resp){
                 return resp.json();
             }).then(function(result){
-                if (!result.hasOwnProperty("data")) {
-                    throw Error("api error");
-                }
-
+            
                 if (!result.data) {
                     throw Error("查無資料，原因：此帳號未註冊");
                 }
