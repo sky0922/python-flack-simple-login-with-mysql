@@ -188,9 +188,9 @@ def apiuser():
             cursor.execute(updatasql)
             connect.commit() 
         except:
-            return jsonify({"error" : "true",})
+            return jsonify({"error" : "true"})
         else:
-            return jsonify({"ok" : "true",})
+            return jsonify({"ok" : "true"})
 
 
 #設定 host & port
