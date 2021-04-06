@@ -12,27 +12,53 @@
         // console.log(username);
         let src = "http://127.0.0.1:3000/api/users?username="+username;
 
-        fetch (src).then(function(resp){
-            return resp.json();
-        }).then(function(result){
+        // fetch (src).then(function(resp){
+        //     return resp.json();
+        // }).then(function(result){
             // console.log(JSON.stringify(result));
-            let data = result.data;
-            // console.log(data, data.name, data.username);
+            // let data = result.data;
+            // // console.log(data, data.name, data.username);
             
-            if (JSON.stringify(result) != "{\"data\":null}"){
+            // if (JSON.stringify(result) != "{\"data\":null}"){
+            //     let insertdata = document.querySelector("#result"); 
+            //     let text = document.createTextNode(data.name+"（"+data.username+"）"); 
+            //     insertdata.innerHTML = ""; 
+            //     insertdata.appendChild(text); 
+            // }
+            // else {
+            //     let insertdata = document.querySelector("#result");
+            //     let text = document.createTextNode("查無資料，原因：此帳號未註冊");
+            //     insertdata.innerHTML = "";
+            //     insertdata.appendChild(text);
+            // }
+
+        // });
+
+        fetch (src).then(function(resp){
+                return resp.json();
+            }).then(function(result){
+                if (!result.hasOwnProperty('data')) {
+                    throw Error('api error');
+
+                }
+
+                if (!result.data) {
+                    throw Error('查無資料，原因：此帳號未註冊');
+                }
+                console.log(result.data.name + ' (' + result.data.username + ')');
                 let insertdata = document.querySelector("#result"); 
-                let text = document.createTextNode(data.name+"（"+data.username+"）"); 
+                let text = document.createTextNode(result.data.name + ' (' + result.data.username + ')'); 
                 insertdata.innerHTML = ""; 
                 insertdata.appendChild(text); 
-            }
-            else {
-                let insertdata = document.querySelector("#result");
-                let text = document.createTextNode("查無資料，原因：此帳號未註冊");
-                insertdata.innerHTML = "";
-                insertdata.appendChild(text);
-            }
 
-        });
+            }).catch((err) => {
+                console.log(err);
+                let insertdata2 = document.querySelector("#result");
+                let text2 = document.createTextNode("查無資料，原因：此帳號未註冊");
+                insertdata2.innerHTML = "";
+                insertdata2.appendChild(text2);
+            });
+
 
     }
 
